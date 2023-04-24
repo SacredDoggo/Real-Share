@@ -21,7 +21,7 @@ const Auth = () => {
 
                 </nav>
                 <div className="flex justify-center">
-                    <div className="bg-black bg-opacity-70 self-center px-14 py-16 mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
+                    <div className="bg-black bg-opacity-70 self-center px-16 py-16 mt-2 lg:w-2/5 lg:max-w-md rounded-md w-full">
                         <h2 className="text-white text-4xl mb-8 font-semibold">
                             {variant === 'login' ? 'Sign In' : 'Register'}
                         </h2>
@@ -52,7 +52,7 @@ const Auth = () => {
                                 Login
                             </button>
                             (<p className="text-neutral-500 mt-12">
-                                {variant === 'login' ? 'First time using RealShare?' : 'Already have an account?'} <span onClick={toggleVariant} className="text-white hover:underline hover:cursor-pointer">
+                                {variant === 'login' ? 'New to RealShare?' : 'Already have an account?'} <span onClick={toggleVariant} className="text-white hover:underline hover:cursor-pointer">
                                     {variant === 'login' ? 'Create an account' : 'Sign in'}
                                 </span>
                             </p>)
