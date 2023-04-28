@@ -1,17 +1,34 @@
 import { useCallback, useState } from "react";
 import Input from "../components/Input";
-
+import axios from "axios";
 
 
 const Auth = () => {
     
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
 
     const [variant, setVariant] = useState('login');
     const toggleVariant = useCallback(() => {
         setVariant((currentVariant) => currentVariant === 'login' ? 'register' : 'login');
+    }, []);
+
+    const register = useCallback(async () => {
+        try {
+            await axios.post('/api/register', {
+                name,
+                email,
+                password
+            });
+            toggleVariant();
+        } catch (error) {
+            console.log(error);
+        }
+    }, [email, name, password]);
+
+    const login = useCallback(async () => {
+        console.log("Login");
     }, []);
 
     return (
@@ -28,10 +45,10 @@ const Auth = () => {
                         <div className="flex flex-col gap-4">
                             {variant === 'register' && (
                                 <Input 
-                                    id="username"
-                                    onChange={(e: any) => { setUsername(e.target.value) }}
-                                    label="Username"
-                                    value={username}
+                                    id="name"
+                                    onChange={(e: any) => { setName(e.target.value) }}
+                                    label="Name"
+                                    value={name}
                                 />
                             )}
                             <Input 
@@ -48,8 +65,8 @@ const Auth = () => {
                                 label="Password"
                                 type="password"
                             />
-                            <button className="bg-red-600 rounded-md text-white w-full py-3 mt-10 hover:bg-red-700 transition">
-                                Login
+                            <button onClick={variant === 'login' ? login : register} className="bg-red-600 rounded-md text-white w-full py-3 mt-10 hover:bg-red-700 transition">
+                            {variant === 'login' ? 'Login' : 'Sign up'}
                             </button>
                             (<p className="text-neutral-500 mt-12">
                                 {variant === 'login' ? 'New to RealShare?' : 'Already have an account?'} <span onClick={toggleVariant} className="text-white hover:underline hover:cursor-pointer">
