@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import Input from "../components/Input";
 import axios from "axios";
+import Loader from "@/components/Loader";
 
 
 const Auth = () => {
@@ -9,6 +10,9 @@ const Auth = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
 
+    const [loading, setLoading] = useState(false);
+
+    // const [registrationSuccess, setRegistrationSuccess] = useState(false);
     const [variant, setVariant] = useState('login');
     const toggleVariant = useCallback(() => {
         setVariant((currentVariant) => currentVariant === 'login' ? 'register' : 'login');
@@ -16,14 +20,21 @@ const Auth = () => {
 
     const register = useCallback(async () => {
         try {
+            setLoading(true);
             await axios.post('/api/register', {
                 name,
                 email,
                 password
+            }).then(function(){
+                toggleVariant();
+            }).catch(function(error) {
+                alert(error.response.data['error']);
             });
-            toggleVariant();
+            setLoading(false);
         } catch (error) {
+            alert(error);
             console.log(error);
+            setLoading(false);
         }
     }, [email, name, password]);
 
@@ -66,13 +77,15 @@ const Auth = () => {
                                 type="password"
                             />
                             <button onClick={variant === 'login' ? login : register} className="bg-red-600 rounded-md text-white w-full py-3 mt-10 hover:bg-red-700 transition">
-                            {variant === 'login' ? 'Login' : 'Sign up'}
+                                {loading ? <Loader /> : variant === 'login' ? 'Login' : 'Sign up'}
                             </button>
-                            (<p className="text-neutral-500 mt-12">
-                                {variant === 'login' ? 'New to RealShare?' : 'Already have an account?'} <span onClick={toggleVariant} className="text-white hover:underline hover:cursor-pointer">
+                            
+                            <p className="text-neutral-500 mt-12">
+                                {variant === 'login' ? 'New to RealShare? ' : 'Already have an account? '} 
+                                <span onClick={toggleVariant} className="text-white hover:underline hover:cursor-pointer">
                                     {variant === 'login' ? 'Create an account' : 'Sign in'}
                                 </span>
-                            </p>)
+                            </p>
                         </div>
                     </div>
                 </div>

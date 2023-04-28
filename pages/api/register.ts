@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         if(existingUser){
-            return res.status(422).json({ error: 'Enail already in use' });
+            return res.status(422).json({ error: 'Email already in use' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 15);
