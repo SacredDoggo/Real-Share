@@ -2,10 +2,14 @@ import { useCallback, useState } from "react";
 import Input from "../components/Input";
 import axios from "axios";
 import Loader from "@/components/Loader";
+import { signIn } from 'next-auth/react'
+import { useRouter } from "next/router";
 
+import { FcGoogle } from 'react-icons/fc';
+import { FaGithub } from 'react-icons/fa';
 
 const Auth = () => {
-    
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
@@ -18,6 +22,22 @@ const Auth = () => {
         setVariant((currentVariant) => currentVariant === 'login' ? 'register' : 'login');
     }, []);
 
+    const login = useCallback(async () => {
+        try {
+            await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+                callbackUrl: '/'
+            });
+            
+            router.push('/');
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }, [email, password, router]);
+
     const register = useCallback(async () => {
         try {
             setLoading(true);
@@ -26,7 +46,7 @@ const Auth = () => {
                 email,
                 password
             }).then(function(){
-                toggleVariant();
+                login();
             }).catch(function(error) {
                 alert(error.response.data['error']);
             });
@@ -36,11 +56,7 @@ const Auth = () => {
             console.log(error);
             setLoading(false);
         }
-    }, [email, name, password]);
-
-    const login = useCallback(async () => {
-        console.log("Login");
-    }, []);
+    }, [email, name, password, login]);
 
     return (
         <div className="relative h-full w-full">
@@ -79,7 +95,14 @@ const Auth = () => {
                             <button onClick={variant === 'login' ? login : register} className="bg-red-600 rounded-md text-white w-full py-3 mt-10 hover:bg-red-700 transition">
                                 {loading ? <Loader /> : variant === 'login' ? 'Login' : 'Sign up'}
                             </button>
-                            
+                            <div className="flex flex-row items-center gap-4 mt-8 justify-center">
+                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
+                                    <FcGoogle />
+                                </div>
+                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
+                                    <FaGithub />
+                                </div>
+                            </div>
                             <p className="text-neutral-500 mt-12">
                                 {variant === 'login' ? 'New to RealShare? ' : 'Already have an account? '} 
                                 <span onClick={toggleVariant} className="text-white hover:underline hover:cursor-pointer">
